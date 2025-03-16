@@ -11,7 +11,7 @@ class G1Env():
 
     def __init__(self, time_step=0.001):
         self.builder = DiagramBuilder()
-
+        self.time_step = time_step
         # Make the whole plant for scene
         self.plant, self.scene_graph = AddMultibodyPlantSceneGraph(self.builder, time_step=time_step)
         parser = Parser(self.plant)
@@ -111,7 +111,9 @@ class G1Env():
         tauG = self.controller_plant.CalcGravityGeneralizedForces(plant_context)
         q_ddot = np.linalg.inv(M) @ (u_input - Cv - tauG)  # Compute acceleration q̈
         x_dot = np.concatenate((x[7:],q_ddot))
-        return x_dot
+        x_next = x + x_dot * self.time_step
+        
+        return x_next
     
     def MakeRobotCommandTrajectory(self, plant):
         T = 2.0
