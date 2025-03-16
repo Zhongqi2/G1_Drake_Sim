@@ -22,9 +22,9 @@ class data_collecter():
             u = np.random.uniform(self.effort_lower_limits, self.effort_upper_limits)
             train_data[0,traj_i,:]=np.concatenate([u.reshape(-1),x.reshape(-1)],axis=0).reshape(-1)
             for i in range(1,steps+1):
-                x_d = self.env.step(x,u)
+                x_next = self.env.step(x,u)
                 u = np.random.uniform(self.effort_lower_limits, self.effort_upper_limits)
-                train_data[i,traj_i,:]=np.concatenate([u.reshape(-1),x_d.reshape(-1)],axis=0).reshape(-1)
+                train_data[i,traj_i,:]=np.concatenate([u.reshape(-1),x_next.reshape(-1)],axis=0).reshape(-1)
 
         return train_data
 
