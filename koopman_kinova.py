@@ -190,6 +190,8 @@ def train(env_name, train_steps=20000, suffix="", all_loss=0, encode_dim=12, lay
         print("Generating new dataset...")
         Ktrain_data = np.loadtxt("Data/datasets/output_20250401_195609.txt")
         Ktest_data = np.loadtxt("Data/datasets/output_20250401_191356.txt")
+        
+        ipdb.set_trace()
         dataset = {'Ktrain_data': Ktrain_data, 'Ktest_data': Ktest_data}
         torch.save(dataset, dataset_filename)
 
