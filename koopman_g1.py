@@ -10,7 +10,7 @@ from torch.utils.data import Dataset, DataLoader
 import math
 from g1_env import G1Env
 from pydrake.all import *
-
+import ipdb
 # -------------------------------
 # G1 Data Collection
 # -------------------------------
@@ -195,7 +195,7 @@ def train(env_name, train_steps=20000, suffix="", all_loss=0, encode_dim=12, lay
     Ktest_samples = Ktest_data.shape[1]
     print("Test data ok!, shape:", Ktest_data.shape)
     print("Train data ok!, shape:", Ktrain_data.shape)
-
+    ipdb.set_trace()
     if isinstance(Ktrain_data, np.ndarray):
         Ktrain_data = torch.from_numpy(Ktrain_data)
     if isinstance(Ktest_data, np.ndarray):
@@ -217,7 +217,7 @@ def train(env_name, train_steps=20000, suffix="", all_loss=0, encode_dim=12, lay
 
     optimizer = torch.optim.Adam(net.parameters(), lr=initial_lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=lr_step, gamma=lr_gamma)
-    
+
     for name, param in net.named_parameters():
         print("model:", name, param.requires_grad)
 
@@ -292,6 +292,10 @@ def train(env_name, train_steps=20000, suffix="", all_loss=0, encode_dim=12, lay
                     if loss_eval < best_loss:
                         best_loss = copy.copy(Kloss_eval)
                         torch.save(net.state_dict(), f"best_model_{env_name}.pt")
+                        torch.save({
+                                    "model": net.state_dict(),
+                                    "layer": layers 
+                                    }, "model.pth")
 
                     wandb.log({
                         "Eval/Kloss": Kloss_eval.item(),

@@ -1,5 +1,5 @@
 import torch
-
+import ipdb
 from koopman_g1 import Network, data_collecter
 
 def load_koopman_model(pth_path, device="cpu"):
@@ -8,7 +8,7 @@ def load_koopman_model(pth_path, device="cpu"):
     Returns a reconstructed `Network` instance on the specified device.
     """
     checkpoint = torch.load(pth_path, map_location=device)
-
+    print("Checkpoint keys:", checkpoint.keys())
     layers = checkpoint["layer"]  # [in_dim, ..., encode_dim]
 
     # Calculate dimension of the Koopman space: 
@@ -26,6 +26,14 @@ def load_koopman_model(pth_path, device="cpu"):
     net.to(device)
 
     return net
+
+def recover_A_and_B(net, device="cpu"):
+    with torch.no_grad():
+      # A and B are the weight matrices from net.lA and net.lB
+      A = net.lA.weight.detach().cpu().numpy()  # shape [Nkoopman, Nkoopman]
+      B = net.lB.weight.detach().cpu().numpy()  # shape [Nkoopman, u_dim]
+    return A,B
+
 
 def recover_single_control(current_state,
                            target_state,
@@ -106,3 +114,8 @@ def recover_controls_for_trajectory(states,
     
     return controls
 
+if __name__ == "__main__":
+  device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+  net = load_koopman_model("model.pth",device)
+  A,B = recover_A_and_B(net,device)
+  ipdb.set_trace()

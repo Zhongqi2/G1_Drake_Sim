@@ -1,0 +1,208 @@
+{
+    "os": "Linux-6.8.0-52-generic-x86_64-with-glibc2.35",
+    "python": "3.10.12",
+    "heartbeatAt": "2025-03-19T03:12:25.270022",
+    "startedAt": "2025-03-19T03:12:24.677695",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/zhongqi/Documents/workspace/G1_sim/koopman_g1.py",
+    "codePathLocal": "koopman_g1.py",
+    "codePath": "koopman_g1.py",
+    "git": {
+        "remote": "https://github.com/Zhongqi2/G1_Drake_Sim.git",
+        "commit": "187952b48d9db182ad9b2f204f2226e76453c749"
+    },
+    "email": "zhongqi2@andrew.cmu.edu",
+    "root": "/home/zhongqi/Documents/workspace/G1_sim",
+    "host": "zhongqi-Alienware-Aurora-R16",
+    "username": "zhongqi",
+    "executable": "/home/zhongqi/Documents/workspace/drake_env_1.28/bin/python",
+    "cpu_count": 24,
+    "cpu_count_logical": 32,
+    "cpu_freq": {
+        "current": 2.2185937499999997,
+        "min": 800.0,
+        "max": 5106.25
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 5.699,
+            "min": 800.0,
+            "max": 5700.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 5700.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 5700.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 5700.0
+        },
+        {
+            "current": 5.7,
+            "min": 800.0,
+            "max": 5700.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 5700.0
+        },
+        {
+            "current": 2.966,
+            "min": 800.0,
+            "max": 5700.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 5700.0
+        },
+        {
+            "current": 2.13,
+            "min": 800.0,
+            "max": 6000.0
+        },
+        {
+            "current": 3.069,
+            "min": 800.0,
+            "max": 6000.0
+        },
+        {
+            "current": 5.7,
+            "min": 800.0,
+            "max": 6100.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 6100.0
+        },
+        {
+            "current": 3.279,
+            "min": 800.0,
+            "max": 5800.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 5800.0
+        },
+        {
+            "current": 5.7,
+            "min": 800.0,
+            "max": 5800.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 5800.0
+        },
+        {
+            "current": 4.399,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 4.427,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 4.401,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2.604,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 1.989,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 2.237,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 0.795,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 4.308,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 1.584,
+            "min": 800.0,
+            "max": 4400.0
+        },
+        {
+            "current": 0.8,
+            "min": 800.0,
+            "max": 4400.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 786.3739242553711,
+            "used": 697.3340530395508
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4090",
+            "memory_total": 25757220864
+        }
+    ],
+    "memory": {
+        "total": 31.05379867553711
+    }
+}

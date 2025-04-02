@@ -1,0 +1,36 @@
+Traceback (most recent call last):
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 355, in <module>
+    main()
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 335, in main
+    train(env_name=env,
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 260, in train
+    for batch in train_loader:
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 675, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 103, in __getitem__
+    return self.data[:, idx, :]
+IndexError: too many indices for tensor of dimension 2
+Traceback (most recent call last):
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 355, in <module>
+    main()
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 335, in main
+    train(env_name=env,
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 260, in train
+    for batch in train_loader:
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 675, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 103, in __getitem__
+    return self.data[:, idx, :]
+IndexError: too many indices for tensor of dimension 2

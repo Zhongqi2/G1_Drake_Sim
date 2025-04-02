@@ -4,6 +4,8 @@ import ipdb
 from support_functions import AddShape, AddMultibodyTriad
 import matplotlib.pyplot as plt
 from g1_env import G1Env
+from inference import recover_A_and_B,load_koopman_model,recover_single_control
+import torch
 
 class data_collecter():
     def __init__(self,env_name) -> None:
@@ -25,12 +27,35 @@ class data_collecter():
                 x_next = self.env.step(x,u)
                 u = np.random.uniform(self.effort_lower_limits, self.effort_upper_limits)
                 train_data[i,traj_i,:]=np.concatenate([u.reshape(-1),x_next.reshape(-1)],axis=0).reshape(-1)
-
         return train_data
-
+    
+    def gravity_compensation_test(self):
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        net = load_koopman_model("model.pth",device)
+        A,B = recover_A_and_B(net,device)
+        x = np.array([0.5,0.5,0.5,0.5,0.5,0.5,0.5,0,0,0,0,0,0,0])
+        for i in range(10):
+            # u = np.zeros(7)
+            # x_next = self.env.step(x,u)
+            # plant_context = self.env.controller_plant.CreateDefaultContext()
+            # plant_context.SetContinuousState(x)
+            # tauG = self.env.controller_plant.CalcGravityGeneralizedForces(plant_context)
+            u = recover_single_control(x,x,net,device).cpu().numpy()
+            x_next = self.env.step(x,u)
+            print(x_next)
+            x_next[7:] = np.zeros(7)
+            x = x_next
+        ipdb.set_trace()
+        temp = (np.eye(78)- A) @ x
+        
+        
+        
+        ipdb.set_trace()
+    
 if __name__ == "__main__":
     Ktrain_samples = 1000
     Ksteps = 10
     G1_data_collecter = data_collecter('g1')  
-    train_data = G1_data_collecter.collect_koopman_data(Ktrain_samples,Ksteps)
+    # train_data = G1_data_collecter.collect_koopman_data(Ktrain_samples,Ksteps)
+    G1_data_collecter.gravity_compensation_test()
     ipdb.set_trace()

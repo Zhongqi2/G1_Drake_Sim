@@ -102,15 +102,19 @@ class G1Env():
         plant_context = self.controller_plant.CreateDefaultContext()
         # plant_context.SetContinuousState(x)
         # self.controller_plant.get_input_port(3).FixValue(plant_context, u_input)
-        # x_dot = self.controller_plant.EvalTimeDerivatives(plant_context).CopyToVector()
+        # x_dot1 = self.controller_plant.EvalTimeDerivatives(plant_context).CopyToVector()
         
         self.controller_plant.SetPositions(plant_context, x[:7])
         self.controller_plant.SetVelocities(plant_context, x[7:])
-        M = self.controller_plant.CalcMassMatrixViaInverseDynamics(plant_context)
+        M = self.controller_plant.CalcMassMatrix(plant_context)
         Cv = self.controller_plant.CalcBiasTerm(plant_context)
         tauG = self.controller_plant.CalcGravityGeneralizedForces(plant_context)
-        q_ddot = np.linalg.inv(M) @ (u_input - Cv - tauG)  # Compute acceleration q̈
+        q_ddot = np.linalg.inv(M) @ (u_input - tauG - Cv)  # Compute acceleration q̈
         x_dot = np.concatenate((x[7:],q_ddot))
+        print(np.linalg.det(M))
+        # print("tauG:",tauG)
+        # print("x_dot:",x_dot)
+        # ipdb.set_trace()
         x_next = x + x_dot * self.time_step
         
         return x_next
