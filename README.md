@@ -1,5 +1,8 @@
 # G1_Drake_Sim
 
+### update the kinova robot's data
+https://drive.google.com/file/d/1dH3dkWOniAxpCNauP9Q4QxZS602AWK9Q/view?usp=sharing
+
 ### Dependencies
 1. Install drake: https://drake.mit.edu/
 
