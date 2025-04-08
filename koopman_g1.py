@@ -195,7 +195,7 @@ def train(env_name, train_steps=20000, suffix="", all_loss=0, encode_dim=12, lay
     Ktest_samples = Ktest_data.shape[1]
     print("Test data ok!, shape:", Ktest_data.shape)
     print("Train data ok!, shape:", Ktrain_data.shape)
-    ipdb.set_trace()
+    # ipdb.set_trace()
     if isinstance(Ktrain_data, np.ndarray):
         Ktrain_data = torch.from_numpy(Ktrain_data)
     if isinstance(Ktest_data, np.ndarray):

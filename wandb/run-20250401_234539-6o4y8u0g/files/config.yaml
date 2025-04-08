@@ -1,0 +1,78 @@
+wandb_version: 1
+
+env_name:
+  desc: null
+  value: kinova
+train_steps:
+  desc: null
+  value: 100000
+suffix:
+  desc: null
+  value: '0'
+all_loss:
+  desc: null
+  value: 1
+encode_dim:
+  desc: null
+  value: 64
+layer_depth:
+  desc: null
+  value: 5
+c_loss:
+  desc: null
+  value: 0
+gamma:
+  desc: null
+  value: 0.8
+detach:
+  desc: null
+  value: 1
+Ktrain_samples:
+  desc: null
+  value: 50000
+seed:
+  desc: null
+  value: 1
+initial_lr:
+  desc: null
+  value: 0.001
+lr_step:
+  desc: null
+  value: 1000
+lr_gamma:
+  desc: null
+  value: 0.95
+weight_decay:
+  desc: null
+  value: 0.0001
+cov_weight:
+  desc: null
+  value: 1
+batch_size:
+  desc: null
+  value: 64
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.12
+    cli_version: 0.17.4
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1743565539
+    t:
+      1:
+      - 1
+      - 55
+      2:
+      - 1
+      - 55
+      3:
+      - 13
+      - 16
+      - 23
+      4: 3.10.12
+      5: 0.17.4
+      8:
+      - 5
+      13: linux-x86_64

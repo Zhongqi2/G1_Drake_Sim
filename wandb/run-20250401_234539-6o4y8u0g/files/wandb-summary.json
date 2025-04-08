@@ -1,0 +1,1 @@
+{"Train/Kloss": 2.3303201094851786, "Train/CovLoss": NaN, "step": 0, "_timestamp": 1743565711.1216211, "_runtime": 171.5612781047821, "_step": 1, "Eval/Kloss": 1.1388887089260005, "Eval/CovLoss": NaN, "Eval/best_loss": 1.1388887089260005}

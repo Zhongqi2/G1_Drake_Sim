@@ -1,0 +1,145 @@
+
+Step:0 K-loss:tensor([3.3611], device='cuda:0', dtype=torch.float64)
+Step:100 K-loss:tensor([0.5375], device='cuda:0', dtype=torch.float64)
+Step:200 K-loss:tensor([0.4717], device='cuda:0', dtype=torch.float64)
+Step:300 K-loss:tensor([0.4443], device='cuda:0', dtype=torch.float64)
+Step:400 K-loss:tensor([0.4156], device='cuda:0', dtype=torch.float64)
+Step:500 K-loss:tensor([0.3939], device='cuda:0', dtype=torch.float64)
+Step:600 K-loss:tensor([0.3831], device='cuda:0', dtype=torch.float64)
+Step:700 K-loss:tensor([0.3739], device='cuda:0', dtype=torch.float64)
+Step:800 K-loss:tensor([0.3728], device='cuda:0', dtype=torch.float64)
+Step:900 K-loss:tensor([0.3678], device='cuda:0', dtype=torch.float64)
+Step:1000 K-loss:tensor([0.3664], device='cuda:0', dtype=torch.float64)
+Step:1100 K-loss:tensor([0.3661], device='cuda:0', dtype=torch.float64)
+Step:1200 K-loss:tensor([0.3680], device='cuda:0', dtype=torch.float64)
+Step:1300 K-loss:tensor([0.3586], device='cuda:0', dtype=torch.float64)
+Step:1400 K-loss:tensor([0.3561], device='cuda:0', dtype=torch.float64)
+Step:1500 K-loss:tensor([0.3579], device='cuda:0', dtype=torch.float64)
+Step:1600 K-loss:tensor([0.3601], device='cuda:0', dtype=torch.float64)
+Step:1700 K-loss:tensor([0.3627], device='cuda:0', dtype=torch.float64)
+Step:1800 K-loss:tensor([0.3643], device='cuda:0', dtype=torch.float64)
+Step:1900 K-loss:tensor([0.3576], device='cuda:0', dtype=torch.float64)
+Step:2000 K-loss:tensor([0.3601], device='cuda:0', dtype=torch.float64)
+Step:2100 K-loss:tensor([0.3630], device='cuda:0', dtype=torch.float64)
+Step:2200 K-loss:tensor([0.3569], device='cuda:0', dtype=torch.float64)
+Step:2300 K-loss:tensor([0.3540], device='cuda:0', dtype=torch.float64)
+Step:2400 K-loss:tensor([0.3562], device='cuda:0', dtype=torch.float64)
+Step:2500 K-loss:tensor([0.3439], device='cuda:0', dtype=torch.float64)
+Step:2600 K-loss:tensor([0.3431], device='cuda:0', dtype=torch.float64)
+Step:2700 K-loss:tensor([0.3353], device='cuda:0', dtype=torch.float64)
+Step:2800 K-loss:tensor([0.3321], device='cuda:0', dtype=torch.float64)
+Step:2900 K-loss:tensor([0.3229], device='cuda:0', dtype=torch.float64)
+Step:3000 K-loss:tensor([0.3121], device='cuda:0', dtype=torch.float64)
+Step:3100 K-loss:tensor([0.3165], device='cuda:0', dtype=torch.float64)
+Step:3200 K-loss:tensor([0.3135], device='cuda:0', dtype=torch.float64)
+Step:3300 K-loss:tensor([0.3019], device='cuda:0', dtype=torch.float64)
+Step:3400 K-loss:tensor([0.3029], device='cuda:0', dtype=torch.float64)
+Step:3500 K-loss:tensor([0.2901], device='cuda:0', dtype=torch.float64)
+Step:3600 K-loss:tensor([0.2999], device='cuda:0', dtype=torch.float64)
+Step:3700 K-loss:tensor([0.2900], device='cuda:0', dtype=torch.float64)
+Step:3800 K-loss:tensor([0.2916], device='cuda:0', dtype=torch.float64)
+Step:3900 K-loss:tensor([0.2804], device='cuda:0', dtype=torch.float64)
+Step:4000 K-loss:tensor([0.2766], device='cuda:0', dtype=torch.float64)
+Step:4100 K-loss:tensor([0.2778], device='cuda:0', dtype=torch.float64)
+Step:4200 K-loss:tensor([0.2821], device='cuda:0', dtype=torch.float64)
+Step:4300 K-loss:tensor([0.2790], device='cuda:0', dtype=torch.float64)
+Step:4400 K-loss:tensor([0.2685], device='cuda:0', dtype=torch.float64)
+Step:4500 K-loss:tensor([0.2750], device='cuda:0', dtype=torch.float64)
+Step:4600 K-loss:tensor([0.2652], device='cuda:0', dtype=torch.float64)
+Step:4700 K-loss:tensor([0.2644], device='cuda:0', dtype=torch.float64)
+Step:4800 K-loss:tensor([0.2708], device='cuda:0', dtype=torch.float64)
+Step:4900 K-loss:tensor([0.2651], device='cuda:0', dtype=torch.float64)
+Step:5000 K-loss:tensor([0.2588], device='cuda:0', dtype=torch.float64)
+Step:5100 K-loss:tensor([0.2623], device='cuda:0', dtype=torch.float64)
+Step:5200 K-loss:tensor([0.2639], device='cuda:0', dtype=torch.float64)
+Step:5300 K-loss:tensor([0.2648], device='cuda:0', dtype=torch.float64)
+Step:5400 K-loss:tensor([0.2594], device='cuda:0', dtype=torch.float64)
+Step:5500 K-loss:tensor([0.2619], device='cuda:0', dtype=torch.float64)
+Step:5600 K-loss:tensor([0.2591], device='cuda:0', dtype=torch.float64)
+Step:5700 K-loss:tensor([0.2572], device='cuda:0', dtype=torch.float64)
+Step:5800 K-loss:tensor([0.2600], device='cuda:0', dtype=torch.float64)
+Step:5900 K-loss:tensor([0.2585], device='cuda:0', dtype=torch.float64)
+Step:6000 K-loss:tensor([0.2616], device='cuda:0', dtype=torch.float64)
+Step:6100 K-loss:tensor([0.2651], device='cuda:0', dtype=torch.float64)
+Step:6200 K-loss:tensor([0.2606], device='cuda:0', dtype=torch.float64)
+Step:6300 K-loss:tensor([0.2554], device='cuda:0', dtype=torch.float64)
+Step:6400 K-loss:tensor([0.2622], device='cuda:0', dtype=torch.float64)
+Step:6500 K-loss:tensor([0.2568], device='cuda:0', dtype=torch.float64)
+Step:6600 K-loss:tensor([0.2644], device='cuda:0', dtype=torch.float64)
+Step:6700 K-loss:tensor([0.2627], device='cuda:0', dtype=torch.float64)
+Step:6800 K-loss:tensor([0.2632], device='cuda:0', dtype=torch.float64)
+Step:6900 K-loss:tensor([0.2620], device='cuda:0', dtype=torch.float64)
+Step:7000 K-loss:tensor([0.2604], device='cuda:0', dtype=torch.float64)
+Step:7100 K-loss:tensor([0.2610], device='cuda:0', dtype=torch.float64)
+Step:7200 K-loss:tensor([0.2614], device='cuda:0', dtype=torch.float64)
+Step:7300 K-loss:tensor([0.2626], device='cuda:0', dtype=torch.float64)
+Step:7400 K-loss:tensor([0.2598], device='cuda:0', dtype=torch.float64)
+Step:7500 K-loss:tensor([0.2630], device='cuda:0', dtype=torch.float64)
+Step:7600 K-loss:tensor([0.2666], device='cuda:0', dtype=torch.float64)
+Step:7700 K-loss:tensor([0.2641], device='cuda:0', dtype=torch.float64)
+Step:7800 K-loss:tensor([0.2621], device='cuda:0', dtype=torch.float64)
+Step:7900 K-loss:tensor([0.2656], device='cuda:0', dtype=torch.float64)
+Traceback (most recent call last):
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 360, in <module>
+    main()
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 340, in main
+    train(env_name=env,
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 269, in train
+    Kloss = Klinear_loss(X, net, mse_loss, data_collect.udim, gamma, Nstate, all_loss)
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 147, in Klinear_loss
+    Y = net.encode(data[i+1, :, u_dim:])
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 125, in encode
+    return torch.cat([x, self.encode_net(x)], axis=-1)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 82, in forward
+    out = self.relu(out)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/activation.py", line 103, in forward
+    return F.relu(input, inplace=self.inplace)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/functional.py", line 1500, in relu
+    result = torch.relu(input)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 360, in <module>
+    main()
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 340, in main
+    train(env_name=env,
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 269, in train
+    Kloss = Klinear_loss(X, net, mse_loss, data_collect.udim, gamma, Nstate, all_loss)
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 147, in Klinear_loss
+    Y = net.encode(data[i+1, :, u_dim:])
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 125, in encode
+    return torch.cat([x, self.encode_net(x)], axis=-1)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/G1_sim/koopman_kinova.py", line 82, in forward
+    out = self.relu(out)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/modules/activation.py", line 103, in forward
+    return F.relu(input, inplace=self.inplace)
+  File "/home/zhongqi/Documents/workspace/drake_env_1.28/lib/python3.10/site-packages/torch/nn/functional.py", line 1500, in relu
+    result = torch.relu(input)
+KeyboardInterrupt

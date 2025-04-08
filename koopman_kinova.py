@@ -190,15 +190,18 @@ def train(env_name, train_steps=20000, suffix="", all_loss=0, encode_dim=12, lay
         print("Generating new dataset...")
         Ktrain_data = np.loadtxt("Data/datasets/output_20250401_195609.txt")
         Ktest_data = np.loadtxt("Data/datasets/output_20250401_191356.txt")
-        
-        ipdb.set_trace()
-        dataset = {'Ktrain_data': Ktrain_data, 'Ktest_data': Ktest_data}
+        Ktrain_data = Ktrain_data[:Ktrain_data.shape[0]//1000*1000]
+        Ktest_data = Ktest_data[:Ktest_data.shape[0]//1000*1000]
+        Ktrain_data1 = Ktrain_data.reshape(1000,Ktrain_data.shape[0]//1000,Ktrain_data.shape[1])
+        Ktest_data1 = Ktest_data.reshape(1000,Ktest_data.shape[0]//1000,Ktest_data.shape[1])
+        # ipdb.set_trace()
+        dataset = {'Ktrain_data': Ktrain_data1, 'Ktest_data': Ktest_data1}
         torch.save(dataset, dataset_filename)
 
     Ktest_samples = Ktest_data.shape[1]
     print("Test data ok!, shape:", Ktest_data.shape)
     print("Train data ok!, shape:", Ktrain_data.shape)
-    ipdb.set_trace()
+    # ipdb.set_trace()
     if isinstance(Ktrain_data, np.ndarray):
         Ktrain_data = torch.from_numpy(Ktrain_data)
     if isinstance(Ktest_data, np.ndarray):
