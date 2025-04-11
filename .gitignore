@@ -1,3 +1,5 @@
 Data/datasets/*.pt
 Data/datasets/*.txt
 wandb
+koopman/data/datasets
+koopman/scripts/wandb
