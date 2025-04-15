@@ -82,6 +82,13 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     Ktrain_data = torch.from_numpy(Ktrain_data).float()
     Kval_data = torch.from_numpy(Kval_data).float()
 
+    print("NaNs in Ktrain_data:", torch.isnan(Ktrain_data).any().item())
+    print("Infs in Ktrain_data:", torch.isinf(Ktrain_data).any().item())
+    print("NaNs in Kval_data:", torch.isnan(Kval_data).any().item())
+    print("Infs in Kval_data:", torch.isinf(Kval_data).any().item())
+    print("Train data max:", Ktrain_data.max().item(), "min:", Ktrain_data.min().item())
+
+
     u_dim = data_collector.u_dim
     state_dim = data_collector.state_dim
 
@@ -138,6 +145,7 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
         for batch in train_loader:
             if step >= train_steps:
                 break
+
             X = batch.permute(1, 0, 2).to(device)
 
             Kloss, initial_encoding = Klinear_loss(X, net, mse_loss, u_dim, gamma, device)
@@ -202,8 +210,6 @@ def main():
     encode_dims = [1024]
     random_seeds = [1]
     envs = ['Kinova']
-    train_steps = {'G1': 20000, 'Go2': 20000, 'Kinova': 100000}
-    hidden_layers = {'G1': 1, 'Go2': 1, 'Kinova': 2}
 
     for random_seed, env, encode_dim, cov_reg in itertools.product(random_seeds, envs, encode_dims, cov_regs):
         train(project_name=f'Kinova',
@@ -211,10 +217,10 @@ def main():
               train_samples=60000,
               val_samples=20000,
               test_samples=20000,
-              Ksteps=10,
-              train_steps=train_steps[env],
+              Ksteps=50,
+              train_steps=20000,
               encode_dim=encode_dim,
-              hidden_layers=hidden_layers['Kinova'],
+              hidden_layers=5,
               cov_reg=cov_reg,
               gamma=0.8,
               seed=random_seed,

@@ -20,7 +20,6 @@ def load_koopman_model(pth_path, device="cpu"):
 
     # Build the model
     net =KoopmanNet(layers, NKoopman, u_dim)
-    net.double()
     net.load_state_dict(checkpoint["model"])
     net.eval()
     net.to(device)
@@ -55,9 +54,9 @@ def recover_single_control(current_state,
     """
     # Convert states to torch Tensors if they're not already
     if not isinstance(current_state, torch.Tensor):
-        current_state = torch.tensor(current_state, dtype=torch.double, device=device)
+        current_state = torch.tensor(current_state, dtype=torch.float, device=device)
     if not isinstance(target_state, torch.Tensor):
-        target_state = torch.tensor(target_state, dtype=torch.double, device=device)
+        target_state = torch.tensor(target_state, dtype=torch.float, device=device)
 
     # Encode into Koopman space
     with torch.no_grad():
@@ -94,7 +93,7 @@ def recover_controls_for_trajectory(states,
       - controls: list of shape [T, u_dim]
     """
     if not torch.is_tensor(states):
-        states_tensor = torch.as_tensor(states, dtype=torch.double, device=device)
+        states_tensor = torch.as_tensor(states, dtype=torch.float, device=device)
     else:
         states_tensor = states.to(device)
     
