@@ -12,13 +12,17 @@ sys.path.append('../utility')
 from dataset import KoopmanDatasetCollector, KoopmanDataset
 from network import KoopmanNet
 
-def get_layers(input_dim, target_dim, depth=2, alpha=0.5):
-    base_width = int(alpha * (input_dim + target_dim))
-    layers = [input_dim]
-    for i in range(depth):
-        layers.append(base_width)
-    layers.append(target_dim)
-    return layers
+# def get_layers(input_dim, target_dim, depth=2, alpha=0.5):
+#     base_width = int(alpha * (input_dim + target_dim))
+#     layers = [input_dim]
+#     for i in range(depth):
+#         layers.append(base_width)
+#     layers.append(target_dim)
+#     return layers
+
+def get_layers(input_dim, layer_depth):
+    return [input_dim * (2 ** i) for i in range(layer_depth + 2)]
+
 
 def Klinear_loss(data, net, mse_loss, u_dim, gamma, device):
     if u_dim is None:
@@ -58,7 +62,7 @@ def cov_loss(z):
     return torch.norm(off_diag, p='fro')**2
 
 def train(project_name, env_name, train_samples=60000, val_samples=20000, test_samples=20000, Ksteps=15,
-          train_steps=20000, encode_dim=16, hidden_layers=2, cov_reg=0, gamma=0.99, seed=42, batch_size=64, 
+          train_steps=20000, hidden_layers=2, cov_reg=0, gamma=0.99, seed=42, batch_size=64, 
           initial_lr=1e-3, lr_step=1000, lr_gamma=0.95, val_step=1000, max_norm=1, cov_reg_weight=1, normalize=False):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -69,7 +73,7 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 
-    norm_str = "norm" if normalize else "nonorm"
+    norm_str = "norm" if normalize else "unnorm"
 
     if not os.path.exists(f"../log/best_models/{project_name}/"):
         os.makedirs(f"../log/best_models/{project_name}/")
@@ -82,13 +86,6 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     Ktrain_data = torch.from_numpy(Ktrain_data).float()
     Kval_data = torch.from_numpy(Kval_data).float()
 
-    print("NaNs in Ktrain_data:", torch.isnan(Ktrain_data).any().item())
-    print("Infs in Ktrain_data:", torch.isinf(Ktrain_data).any().item())
-    print("NaNs in Kval_data:", torch.isnan(Kval_data).any().item())
-    print("Infs in Kval_data:", torch.isinf(Kval_data).any().item())
-    print("Train data max:", Ktrain_data.max().item(), "min:", Ktrain_data.min().item())
-
-
     u_dim = data_collector.u_dim
     state_dim = data_collector.state_dim
 
@@ -98,8 +95,9 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     print("Train data shape:", Ktrain_data.shape)
     print("Validation data shape:", Kval_data.shape)
 
-    layers = get_layers(state_dim, encode_dim, hidden_layers)
-    Nkoopman = state_dim + encode_dim
+    #ayers = get_layers(state_dim, encode_dim, hidden_layers)
+    layers = get_layers(state_dim, hidden_layers)
+    Nkoopman = state_dim + layers[-1]
 
     print("Encoder layers:", layers)
 
@@ -112,11 +110,11 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=lr_step, gamma=lr_gamma)
 
     wandb.init(project=project_name, 
-               name=f"{env_name}_edim{encode_dim}_closs{'on' if cov_reg else 'off'}_seed{seed}",
+               name=f"{env_name}_edim{layers[-1]}_closs{'on' if cov_reg else 'off'}_seed{seed}",
                config={
                     "env_name": env_name,
                     "train_steps": train_steps,
-                    "encode_dim": encode_dim,
+                    "encode_dim": layers[-1],
                     "hidden_layers": hidden_layers,
                     "c_loss": cov_reg,
                     "gamma": gamma,
@@ -184,7 +182,7 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
                         best_loss = copy.copy(Kloss_val)
                         best_state_dict = copy.copy(net.state_dict())
                         saved_dict = {'model':best_state_dict,'layer':layers}
-                        torch.save(saved_dict, f"../log/best_models/{project_name}/best_model_{norm_str}_{env_name}_{encode_dim}_{cov_reg}_{seed}.pth")
+                        torch.save(saved_dict, f"../log/best_models/{project_name}/best_model_{norm_str}_{env_name}_{layers[-1]}_{cov_reg}_{seed}.pth")
 
                     wandb.log({
                         "Val/Kloss": Kloss_val.item(),
@@ -207,20 +205,19 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
 
 def main():
     cov_regs = [1]
-    encode_dims = [1024]
+    hidden_layer_sizes = [5]
     random_seeds = [1]
     envs = ['Kinova']
 
-    for random_seed, env, encode_dim, cov_reg in itertools.product(random_seeds, envs, encode_dims, cov_regs):
+    for random_seed, env, hidden_layer_size, cov_reg in itertools.product(random_seeds, envs, hidden_layer_sizes, cov_regs):
         train(project_name=f'Kinova',
               env_name=env,
               train_samples=60000,
               val_samples=20000,
               test_samples=20000,
               Ksteps=50,
-              train_steps=20000,
-              encode_dim=encode_dim,
-              hidden_layers=5,
+              train_steps=50000,
+              hidden_layers=hidden_layer_size,
               cov_reg=cov_reg,
               gamma=0.8,
               seed=random_seed,

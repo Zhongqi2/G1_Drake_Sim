@@ -51,14 +51,16 @@ class KinovaDataCollecter():
         return np.concatenate(lst, axis=1)
 
     def collect_koopman_data(self, traj_num, steps):
-        return self.get_data(self.data_pathes, steps+1)[:, :traj_num, :]
+        data = self.get_data(self.data_pathes, steps+1)
+        print(f"Data shape: {data.shape}")
+        return data[:, :traj_num, :]
 
 
 class KoopmanDatasetCollector():
     def __init__(self, env_name, train_samples=60000, val_samples=20000, test_samples=20000, Ksteps=50, normalize=False, shuffle=False):
         self.normalize = normalize
 
-        norm_str = "norm" if self.normalize else "nonorm"
+        norm_str = "norm" if self.normalize else "unnorm"
         data_path = f"../data/datasets/dataset_{env_name}_{norm_str}_Ktrain_{train_samples}_Kval_{val_samples}_Ktest_{test_samples}_Ksteps_{Ksteps}.pt"
         
         self.u_dim = None
