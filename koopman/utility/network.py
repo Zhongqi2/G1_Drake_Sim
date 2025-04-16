@@ -18,7 +18,7 @@ class ResidualBlock(nn.Module):
         return out + res
 
 class KoopmanNet(nn.Module):
-    def __init__(self, encode_layers, Nkoopman: int, u_dim: int | None):
+    def __init__(self, encode_layers, Nkoopman: int, u_dim: int):
         super().__init__()
 
         self.encode_net = nn.Sequential(
@@ -32,21 +32,16 @@ class KoopmanNet(nn.Module):
         self.u_dim = u_dim
 
         self.lA = nn.Linear(Nkoopman, Nkoopman, bias=False)
-        if u_dim is not None:
-            self.lB = nn.Linear(u_dim, Nkoopman, bias=False)
+        self.lB = nn.Linear(u_dim, Nkoopman, bias=False)
 
         self._reset_parameters()
 
     def _reset_parameters(self):
         nn.init.orthogonal_(self.lA.weight)
-        if hasattr(self, "lB"):
-            nn.init.orthogonal_(self.lB.weight)
+        nn.init.orthogonal_(self.lB.weight)
 
     def encode(self, x):
         return torch.cat([x, self.encode_net(x)], dim=-1)
 
-    def forward(self, x, b=None):
-        koop = self.lA(x)
-        if b is not None:
-            koop = koop + self.lB(b)
-        return koop
+    def forward(self, x, u=None):
+        return self.lA(x) + self.lB(u)

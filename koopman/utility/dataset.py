@@ -23,20 +23,28 @@ class KinovaDataCollecter():
         return filtered
 
     def get_data(self, data_paths, steps=10):
+        def clean_and_load_data(path, expected_cols=21):
+            cleaned_lines = []
+            with open(path, 'r') as f:
+                for i, line in enumerate(f):
+                    split_line = line.strip().split()
+                    if len(split_line) == expected_cols:
+                        cleaned_lines.append(line)
+                    else:
+                        print(f"Skipped row {i+1} due to column mismatch: {len(split_line)} columns")
+
+            with open(path, 'w') as f:
+                f.writelines(cleaned_lines)
+
+            return np.loadtxt(path)
+
+
         def process_data(file_path):
-            df = pd.read_csv(f'../data/datasets/kinova_data/{file_path}', 
-                             delimiter=' ', 
-                             header=None,
-                             on_bad_lines='skip', 
-                             engine='python')
-            df = df.dropna()
-            arr = df.to_numpy()
+            arr = clean_and_load_data(f'../data/datasets/kinova_data/{file_path}')
 
             if self.u_dim is not None and self.u_dim > 0:
                 arr[:, :self.u_dim] = self._low_pass_filter(arr[:, :self.u_dim], window_size=1000)
-
-            # Increase sampling period: Original data is at 1ms;
-            # Take every 10th sample to get 10ms sampling period.
+                
             # arr = arr[::10, :]
             
             total_data = arr.shape[0]
@@ -54,7 +62,6 @@ class KinovaDataCollecter():
         data = self.get_data(self.data_pathes, steps+1)
         print(f"Data shape: {data.shape}")
         return data[:, :traj_num, :]
-
 
 class KoopmanDatasetCollector():
     def __init__(self, env_name, train_samples=60000, val_samples=20000, test_samples=20000, Ksteps=50, normalize=False, shuffle=False):

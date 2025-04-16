@@ -12,46 +12,44 @@ sys.path.append('../utility')
 from dataset import KoopmanDatasetCollector, KoopmanDataset
 from network import KoopmanNet
 
-# def get_layers(input_dim, target_dim, depth=2, alpha=0.5):
-#     base_width = int(alpha * (input_dim + target_dim))
-#     layers = [input_dim]
-#     for i in range(depth):
-#         layers.append(base_width)
-#     layers.append(target_dim)
-#     return layers
-
 def get_layers(input_dim, layer_depth):
     return [input_dim * (2 ** i) for i in range(layer_depth + 2)]
 
-
-def Klinear_loss(data, net, mse_loss, u_dim, gamma, device):
-    if u_dim is None:
-        steps, traj_num, state_dim = data.shape
-        X_current = net.encode(data[0, :])
-        initial_encoding = X_current
-        beta = 1.0
-        beta_sum = 0.0
-        loss = torch.zeros(1, dtype=torch.float32).to(device)
-        for i in range(steps-1):
-            X_current = net.forward(X_current, None)
-            beta_sum += beta
-            loss += beta * mse_loss(X_current[:, :state_dim], data[i+1, :])
-            beta *= gamma
-        return loss / beta_sum, initial_encoding
-    
+def koopman_rollout_loss(data, net, mse_loss, u_dim, gamma, device, control_loss_weight=0.0):
     steps, traj_num, N = data.shape
     state_dim = N - u_dim
+
     X_current = net.encode(data[0, :, u_dim:])
     initial_encoding = X_current
     beta = 1.0
     beta_sum = 0.0
-    loss = torch.zeros(1, dtype=torch.float32).to(device)
+    state_loss = torch.zeros(1, dtype=torch.float32).to(device)
+    control_loss = torch.zeros(1, dtype=torch.float32).to(device)
+
     for i in range(steps-1):
         X_current = net.forward(X_current, data[i, :, :u_dim])
         beta_sum += beta
-        loss += beta * mse_loss(X_current[:, :state_dim], data[i+1, :, u_dim:])
+        state_loss += beta * mse_loss(X_current[:, :state_dim], data[i+1, :, u_dim:])
+        if control_loss_weight > 0:
+            X_i = net.encode(data[i, :, u_dim:])
+            X_ip1 = net.encode(data[i+1, :, u_dim:])
+            A = net.lA.weight
+            B = net.lB.weight
+            residual = X_ip1 - (X_i @ A.t())
+            B_pinv = torch.linalg.pinv(B)
+            u_rec = residual @ B_pinv.t()
+            control_loss += beta * mse_loss(u_rec, data[i, :, :u_dim])
         beta *= gamma
-    return loss / beta_sum, initial_encoding
+
+    state_loss = state_loss / beta_sum
+
+    if control_loss_weight > 0:
+        control_loss = control_loss / beta_sum
+        total_loss = state_loss + control_loss_weight * control_loss
+        return total_loss, state_loss, control_loss, initial_encoding
+    else:
+        return state_loss, initial_encoding
+
 
 def cov_loss(z):
     z_mean = torch.mean(z, dim=0, keepdim=True)
@@ -62,7 +60,7 @@ def cov_loss(z):
     return torch.norm(off_diag, p='fro')**2
 
 def train(project_name, env_name, train_samples=60000, val_samples=20000, test_samples=20000, Ksteps=15,
-          train_steps=20000, hidden_layers=2, cov_reg=0, gamma=0.99, seed=42, batch_size=64, 
+          train_steps=20000, hidden_layers=2, cov_reg=0, gamma=0.99, seed=42, batch_size=64, control_loss_weight=0,
           initial_lr=1e-3, lr_step=1000, lr_gamma=0.95, val_step=1000, max_norm=1, cov_reg_weight=1, normalize=False):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -95,7 +93,6 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     print("Train data shape:", Ktrain_data.shape)
     print("Validation data shape:", Kval_data.shape)
 
-    #ayers = get_layers(state_dim, encode_dim, hidden_layers)
     layers = get_layers(state_dim, hidden_layers)
     Nkoopman = state_dim + layers[-1]
 
@@ -131,7 +128,7 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
                     "cov_reg_weight": cov_reg_weight,
                })
 
-    best_loss = 1e10
+    best_state_loss = 1e10
     step = 0
     val_losses = []
 
@@ -145,16 +142,25 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
                 break
 
             X = batch.permute(1, 0, 2).to(device)
+            if step % 100 == 0 and control_loss_weight > 0:
+                total_loss, state_loss, ctrl_loss, initial_encoding = koopman_rollout_loss(
+                    X, net, mse_loss, u_dim, gamma, device, control_loss_weight=control_loss_weight
+                )
+            else:
+                state_loss, initial_encoding = koopman_rollout_loss(
+                    X, net, mse_loss, u_dim, gamma, device, control_loss_weight=0.0
+                )
+                total_loss = state_loss
 
-            Kloss, initial_encoding = Klinear_loss(X, net, mse_loss, u_dim, gamma, device)
+
 
             Closs = cov_loss(initial_encoding[:, state_dim:])
 
             if cov_reg:
                 factor = initial_encoding[:, state_dim:].shape[1] * (initial_encoding[:, state_dim:].shape[1] - 1)
-                loss = Kloss + cov_reg_weight * Closs / factor
+                loss = total_loss + cov_reg_weight * Closs / factor
             else:
-                loss = Kloss
+                loss = total_loss
 
 
             optimizer.zero_grad()
@@ -166,31 +172,33 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
             scheduler.step()
 
             wandb.log({
-                "Train/Kloss": Kloss.item(),
+                "Train/StateLoss": state_loss.item(),
                 "Train/CovLoss": Closs.item(),
                 "step": step
             })
 
             if step % val_step == 0:
                 with torch.no_grad():
-                    Kloss_val, initial_encoding = Klinear_loss(Kval_data, net, mse_loss, u_dim, gamma, device)
+                    total_loss_val, state_loss_val, ctrl_loss_val, initial_encoding = koopman_rollout_loss(
+                        Kval_data, net, mse_loss, u_dim, gamma, device, control_loss_weight=1
+                    )
                     Closs_val = cov_loss(initial_encoding[:, state_dim:])
-
-                    val_losses.append(Kloss_val.item())
-
-                    if Kloss_val < best_loss:
-                        best_loss = copy.copy(Kloss_val)
+                    val_losses.append(state_loss_val.item())
+                    if state_loss_val < best_state_loss:
+                        best_state_loss = copy.copy(state_loss_val)
                         best_state_dict = copy.copy(net.state_dict())
-                        saved_dict = {'model':best_state_dict,'layer':layers}
-                        torch.save(saved_dict, f"../log/best_models/{project_name}/best_model_{norm_str}_{env_name}_{layers[-1]}_{cov_reg}_{seed}.pth")
+                        saved_dict = {'model': best_state_dict, 'layer': layers}
+                        torch.save(saved_dict, f"../log/best_models/{project_name}/best_model_{norm_str}_{env_name}_{layers[-1]}_{cov_reg}_{control_loss_weight}_{seed}.pth")
 
                     wandb.log({
-                        "Val/Kloss": Kloss_val.item(),
+                        "Val/StateLoss": state_loss_val.item(),
+                        "Val/CtrlLoss": ctrl_loss_val.item(),
                         "Val/CovLoss": Closs_val.item(),
-                        "Val/best_Kloss": best_loss.item(),
+                        "Val/best_StateLoss": best_state_loss.item(),
                         "step": step,
                     })
-                    print("Step:{} Validation Kloss:{}".format(step, Kloss_val.item()))
+                    print("Step:{} Validation State Loss:{}".format(step, state_loss_val.item()))
+
 
             step += 1
 
@@ -199,8 +207,8 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     else:
         convergence_loss = np.mean(val_losses) if len(val_losses) > 0 else None
 
-    print("END - Best loss: {}  Convergence loss: {}".format(best_loss, convergence_loss))
-    wandb.log({"best_loss": best_loss, "convergence_loss": convergence_loss})
+    print("END - Best State loss: {}  Convergence loss: {}".format(best_state_loss, convergence_loss))
+    wandb.log({"best_state_loss": best_state_loss, "convergence_state_loss": convergence_loss})
     wandb.finish()
 
 def main():
@@ -228,6 +236,7 @@ def main():
               lr_gamma=0.9,
               max_norm=0.1,
               cov_reg_weight=1,
+              control_loss_weight=1,
               normalize=False,
               )
 

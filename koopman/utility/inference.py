@@ -96,9 +96,8 @@ def recover_controls_for_trajectory(states,
         states_tensor = torch.as_tensor(states, dtype=torch.float, device=device)
     else:
         states_tensor = states.to(device)
-    
-    X_all = net.encode(states_tensor)
 
+    X_all = net.encode(states_tensor)
     X_k = X_all[:-1]    # shape: [T, Nkoopman]
     X_kplus1 = X_all[1:]  # shape: [T, Nkoopman]
 
