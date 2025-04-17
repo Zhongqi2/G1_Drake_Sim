@@ -62,6 +62,21 @@ class KinovaDataCollecter():
         data = self.get_data(self.data_pathes, steps+1)
         print(f"Data shape: {data.shape}")
         return data[:, :traj_num, :]
+    
+class G1CartPoleDataCollecter():
+    def __init__(self):
+        self.state_dim = 18
+        self.u_dim = 7
+        self.data_path = 'G1_cartpole_data.npy'
+    
+    def get_data(self, data_path):
+        data = np.load(f"../data/datasets/g1_data/{data_path}")
+        return data
+    
+    def collect_koopman_data(self, traj_num, steps):
+        data = self.get_data(self.data_path)
+        print(f"Data shape: {data.shape}")
+        return data[:steps+1, :traj_num, :]
 
 class KoopmanDatasetCollector():
     def __init__(self, env_name, train_samples=60000, val_samples=20000, test_samples=20000, Ksteps=50, normalize=False, shuffle=False):
@@ -75,6 +90,10 @@ class KoopmanDatasetCollector():
 
         if env_name == "Kinova":
             collector = KinovaDataCollecter()
+            self.state_dim = collector.state_dim
+            self.u_dim = collector.u_dim
+        elif env_name == "G1CartPole":
+            collector = G1CartPoleDataCollecter()
             self.state_dim = collector.state_dim
             self.u_dim = collector.u_dim
         else:

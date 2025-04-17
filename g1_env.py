@@ -15,14 +15,16 @@ class G1Env():
         # Make the whole plant for scene
         self.plant, self.scene_graph = AddMultibodyPlantSceneGraph(self.builder, time_step=time_step)
         parser = Parser(self.plant)
-        parser.package_map().Add("drake_project", "./")    
+        parser.package_map().Add("drake_project", "./")
+        
         directives = LoadModelDirectives("models/g1_description/g1_7dof_rubber_hand.yaml")
         models = ProcessModelDirectives(directives, self.plant, parser)
 
         # Make the plant for the g1 arm controller to use.
         self.controller_plant = MultibodyPlant(time_step = 0)
         parser1 = Parser(self.controller_plant)
-        parser1.package_map().Add("drake_project", "./")    
+        parser1.package_map().Add("drake_project", "./")
+        
         directives = LoadModelDirectives("models/g1_description/g1_7dof_rubber_hand.yaml")
         models = ProcessModelDirectives(directives, self.controller_plant, parser1)
         self.controller_plant.Finalize()

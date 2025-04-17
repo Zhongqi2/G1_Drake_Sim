@@ -212,13 +212,13 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     wandb.finish()
 
 def main():
-    cov_regs = [1]
-    hidden_layer_sizes = [5]
+    cov_regs = [0]
+    hidden_layer_sizes = [3]
     random_seeds = [1]
-    envs = ['Kinova']
+    envs = ['G1CartPole']
 
     for random_seed, env, hidden_layer_size, cov_reg in itertools.product(random_seeds, envs, hidden_layer_sizes, cov_regs):
-        train(project_name=f'Kinova',
+        train(project_name=f'G1CartPole',
               env_name=env,
               train_samples=60000,
               val_samples=20000,
@@ -236,7 +236,7 @@ def main():
               lr_gamma=0.9,
               max_norm=0.1,
               cov_reg_weight=1,
-              control_loss_weight=1,
+              control_loss_weight=0,
               normalize=False,
               )
 
