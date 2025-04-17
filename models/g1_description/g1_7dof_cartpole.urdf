@@ -627,7 +627,7 @@
   <link name="cartpole_cart">
   <inertial>
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <mass value="10"/>
+    <mass value="1"/>
     <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
   </inertial>
   <visual>
@@ -644,7 +644,7 @@
   <link name="cartpole_pole">
   <inertial>
     <origin xyz="0 0 -0.05" rpy="0 0 0"/>
-    <mass   value="1"/>
+    <mass   value="0.5"/>
     <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
   </inertial>
   <visual>
@@ -667,8 +667,8 @@
   </visual>
   </link>
 
-  <joint name="cartpole_x" type="prismatic">
-  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <joint name="cartpole_x" type="fixed">
+  <origin xyz="0.055 0 0" rpy="0 0 0"/>
   <parent link="right_wrist_yaw_link"/>
   <child  link="cartpole_cart"/>
   <axis  xyz="1 0 0"/>
