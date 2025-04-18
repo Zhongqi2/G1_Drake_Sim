@@ -220,9 +220,9 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
 def main():
     train(project_name=f'G1',
             env_name='G1CartPole',
-            train_samples=60000,
-            val_samples=20000,
-            test_samples=20000,
+            train_samples=600,
+            val_samples=100,
+            test_samples=100,
             steps=50,
             train_steps=50000,
             hidden_layers=4,

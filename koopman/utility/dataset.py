@@ -68,7 +68,7 @@ class G1CartPoleDataCollecter():
     def __init__(self):
         self.state_dim = 16
         self.u_dim = 7
-        self.data_path = 'G1CartPole_data_20250418_084826.npy'
+        self.data_path = 'G1CartPole_data_20250418_112749.npy'
     
     def get_data(self, data_path):
         data = np.load(f"../data/datasets/g1_cartpole_data/{data_path}")
