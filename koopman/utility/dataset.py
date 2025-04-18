@@ -3,6 +3,7 @@ import numpy as np
 import os
 import pandas as pd
 from torch.utils.data import Dataset
+import pickle
 
 class KinovaDataCollecter():
     def __init__(self):
@@ -65,12 +66,29 @@ class KinovaDataCollecter():
     
 class G1CartPoleDataCollecter():
     def __init__(self):
-        self.state_dim = 18
+        self.state_dim = 16
         self.u_dim = 7
-        self.data_path = 'G1_cartpole_data.npy'
+        self.data_path = 'G1CartPole_data_20250418_084826.npy'
     
     def get_data(self, data_path):
-        data = np.load(f"../data/datasets/g1_data/{data_path}")
+        data = np.load(f"../data/datasets/g1_cartpole_data/{data_path}")
+        #data = np.load(f"koopman/data/datasets/g1_cartpole_data/{data_path}")
+        return data
+    
+    def collect_koopman_data(self, traj_num, steps):
+        data = self.get_data(self.data_path)
+        print(f"Data shape: {data.shape}")
+        return data[:steps+1, :traj_num, :]
+    
+class G1DataCollecter():
+    def __init__(self):
+        self.state_dim = 14
+        self.u_dim = 7
+        self.data_path = 'G1_data.npy'
+    
+    def get_data(self, data_path):
+        #data = np.load(f"../data/datasets/g1_data/{data_path}")
+        data = np.load(f"koopman/data/datasets/g1_data/{data_path}")
         return data
     
     def collect_koopman_data(self, traj_num, steps):
@@ -79,12 +97,12 @@ class G1CartPoleDataCollecter():
         return data[:steps+1, :traj_num, :]
 
 class KoopmanDatasetCollector():
-    def __init__(self, env_name, train_samples=60000, val_samples=20000, test_samples=20000, Ksteps=50, normalize=False, shuffle=False):
+    def __init__(self, env_name, train_samples=60000, val_samples=20000, test_samples=20000, steps=50, normalize=False, shuffle=False):
         self.normalize = normalize
 
         norm_str = "norm" if self.normalize else "unnorm"
-        data_path = f"../data/datasets/dataset_{env_name}_{norm_str}_Ktrain_{train_samples}_Kval_{val_samples}_Ktest_{test_samples}_Ksteps_{Ksteps}.pt"
-        
+        data_path = f"../data/datasets/dataset_{env_name}_{norm_str}_train_{train_samples}_val_{val_samples}_test_{test_samples}_steps_{steps}.pt"
+        #data_path = f"koopman/data/datasets/dataset_{env_name}_{norm_str}_train_{train_samples}_val_{val_samples}_test_{test_samples}_steps_{steps}.pt"
         self.u_dim = None
         self.state_dim = None
 
@@ -96,11 +114,15 @@ class KoopmanDatasetCollector():
             collector = G1CartPoleDataCollecter()
             self.state_dim = collector.state_dim
             self.u_dim = collector.u_dim
+        elif env_name == "G1":
+            collector = G1DataCollecter()
+            self.state_dim = collector.state_dim
+            self.u_dim = collector.u_dim
         else:
             raise ValueError("Unknown environment name.")
         
         if not os.path.exists(data_path):
-            data = collector.collect_koopman_data(train_samples+val_samples+test_samples, Ksteps)
+            data = collector.collect_koopman_data(train_samples+val_samples+test_samples, steps)
             if shuffle:
                 permutation = np.random.permutation(data.shape[1])
                 shuffled = data[:, permutation, :]
@@ -113,34 +135,37 @@ class KoopmanDatasetCollector():
                 val_data = data[:, train_samples:train_samples+val_samples, :]
                 test_data = data[:, train_samples+val_samples:train_samples+val_samples+test_samples, :]
             
-            if self.normalize:
-                if self.u_dim is None:
-                    train_mean = np.mean(train_data, axis=(0,1))
-                    train_std = np.std(train_data, axis=(0,1))
-                    train_data = (train_data - train_mean) / train_std
-                    val_data = (val_data - train_mean) / train_std
-                    test_data = (test_data - train_mean) / train_std
-                else:
-                    action_train_mean = np.mean(train_data[..., :self.u_dim], axis=(0,1))
-                    action_train_std = np.std(train_data[..., :self.u_dim], axis=(0,1))
-                    state_train_mean = np.mean(train_data[..., self.u_dim:], axis=(0,1))
-                    state_train_std = np.std(train_data[..., self.u_dim:], axis=(0,1))
+            if self.u_dim is None:
+                train_mean = np.mean(train_data, axis=(0,1))
+                train_std = np.std(train_data, axis=(0,1))
+                train_data = (train_data - train_mean) / train_std
+                val_data = (val_data - train_mean) / train_std
+                test_data = (test_data - train_mean) / train_std
+            else:
+                action_train_mean = np.mean(train_data[..., :self.u_dim], axis=(0,1))
+                action_train_std = np.std(train_data[..., :self.u_dim], axis=(0,1))
+                state_train_mean = np.mean(train_data[..., self.u_dim:], axis=(0,1))
+                state_train_std = np.std(train_data[..., self.u_dim:], axis=(0,1))
 
-                    action_train_std = np.maximum(action_train_std, 1e-8)
-                    state_train_std = np.maximum(state_train_std, 1e-8)
-
-                    train_data[..., :self.u_dim] = (train_data[..., :self.u_dim] - action_train_mean) / action_train_std
-                    train_data[..., self.u_dim:] = (train_data[..., self.u_dim:] - state_train_mean) / state_train_std
-                    val_data[..., :self.u_dim] = (val_data[..., :self.u_dim] - action_train_mean) / action_train_std
-                    val_data[..., self.u_dim:] = (val_data[..., self.u_dim:] - state_train_mean) / state_train_std
-                    test_data[..., :self.u_dim] = (test_data[..., :self.u_dim] - action_train_mean) / action_train_std
-                    test_data[..., self.u_dim:] = (test_data[..., self.u_dim:] - state_train_mean) / state_train_std
+                action_train_std = np.maximum(action_train_std, 1e-8)
+                state_train_std = np.maximum(state_train_std, 1e-8)
             
-            torch.save({"Ktrain_data": train_data, "Kval_data": val_data, "Ktest_data": test_data}, data_path)
+            if self.normalize:
+                train_data[..., :self.u_dim] = (train_data[..., :self.u_dim] - action_train_mean) / action_train_std
+                train_data[..., self.u_dim:] = (train_data[..., self.u_dim:] - state_train_mean) / state_train_std
+                val_data[..., :self.u_dim] = (val_data[..., :self.u_dim] - action_train_mean) / action_train_std
+                val_data[..., self.u_dim:] = (val_data[..., self.u_dim:] - state_train_mean) / state_train_std
+                test_data[..., :self.u_dim] = (test_data[..., :self.u_dim] - action_train_mean) / action_train_std
+                test_data[..., self.u_dim:] = (test_data[..., self.u_dim:] - state_train_mean) / state_train_std
+            
+            torch.save({"train_data": train_data, "val_data": val_data, "test_data": test_data, 'train_state_mean': state_train_mean, 
+                        'train_control_mean': action_train_mean, 'train_state_std': state_train_std, 'train_control_std': action_train_std}, 
+                        data_path, pickle_protocol=pickle.HIGHEST_PROTOCOL)
 
-        self.train_data = torch.load(data_path, weights_only=False)["Ktrain_data"]
-        self.val_data = torch.load(data_path, weights_only=False)["Kval_data"]
-        self.test_data = torch.load(data_path, weights_only=False)["Ktest_data"]
+        dataset = torch.load(data_path, weights_only=False)
+        self.train_data = dataset["train_data"]
+        self.val_data = dataset["val_data"]
+        self.test_data = dataset["test_data"]
 
     
     def get_data(self):

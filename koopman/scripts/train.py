@@ -59,7 +59,7 @@ def cov_loss(z):
     off_diag = cov_matrix - diag_cov
     return torch.norm(off_diag, p='fro')**2
 
-def train(project_name, env_name, train_samples=60000, val_samples=20000, test_samples=20000, Ksteps=15,
+def train(project_name, env_name, train_samples=60000, val_samples=20000, test_samples=20000, steps=15,
           train_steps=20000, hidden_layers=2, cov_reg=0, gamma=0.99, seed=42, batch_size=64, control_loss_weight=0,
           initial_lr=1e-3, lr_step=1000, lr_gamma=0.95, val_step=1000, max_norm=1, cov_reg_weight=1, normalize=False):
 
@@ -78,11 +78,11 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
 
     print("Loading dataset...")
 
-    data_collector = KoopmanDatasetCollector(env_name, train_samples, val_samples, test_samples, Ksteps, normalize=normalize)
-    Ktrain_data, Kval_data, Ktest_data = data_collector.get_data()
+    data_collector = KoopmanDatasetCollector(env_name, train_samples, val_samples, test_samples, steps, normalize=normalize)
+    train_data, val_data, _ = data_collector.get_data()
 
-    Ktrain_data = torch.from_numpy(Ktrain_data).float()
-    Kval_data = torch.from_numpy(Kval_data).float()
+    train_data = torch.from_numpy(train_data).float()
+    val_data = torch.from_numpy(val_data).float()
 
     u_dim = data_collector.u_dim
     state_dim = data_collector.state_dim
@@ -90,8 +90,8 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     print("u_dim:", u_dim)
     print("state_dim:", state_dim)
 
-    print("Train data shape:", Ktrain_data.shape)
-    print("Validation data shape:", Kval_data.shape)
+    print("Train data shape:", train_data.shape)
+    print("Validation data shape:", val_data.shape)
 
     layers = get_layers(state_dim, hidden_layers)
     Nkoopman = state_dim + layers[-1]
@@ -115,10 +115,9 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
                     "hidden_layers": hidden_layers,
                     "c_loss": cov_reg,
                     "gamma": gamma,
-                    "Ktrain_samples": Ktrain_data.shape[1],
-                    "Kval_samples": Kval_data.shape[1],
-                    "Ktest_samples": Ktest_data.shape[1],
-                    "Ksteps": Ktrain_data.shape[0],
+                    "train_samples": train_data.shape[1],
+                    "val_samples": val_data.shape[1],
+                    "steps": train_data.shape[0],
                     "seed": seed,
                     "initial_lr": initial_lr,
                     "lr_step": lr_step,
@@ -132,9 +131,9 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     step = 0
     val_losses = []
 
-    train_dataset = KoopmanDataset(Ktrain_data)
+    train_dataset = KoopmanDataset(train_data)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
-    Kval_data = Kval_data.to(device)
+    val_data = val_data.to(device)
 
     while step < train_steps:
         for batch in train_loader:
@@ -179,9 +178,16 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
 
             if step % val_step == 0:
                 with torch.no_grad():
-                    total_loss_val, state_loss_val, ctrl_loss_val, initial_encoding = koopman_rollout_loss(
-                        Kval_data, net, mse_loss, u_dim, gamma, device, control_loss_weight=1
-                    )
+                    if control_loss_weight > 0:
+                        total_loss_val, state_loss_val, ctrl_loss_val, initial_encoding = koopman_rollout_loss(
+                            val_data, net, mse_loss, u_dim, gamma, device, control_loss_weight=control_loss_weight
+                        )
+                    else:
+                        state_loss_val, initial_encoding = koopman_rollout_loss(
+                            val_data, net, mse_loss, u_dim, gamma, device, control_loss_weight=0.0
+                        )
+                        ctrl_loss_val = torch.zeros(1)
+
                     Closs_val = cov_loss(initial_encoding[:, state_dim:])
                     val_losses.append(state_loss_val.item())
                     if state_loss_val < best_state_loss:
@@ -212,33 +218,27 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
     wandb.finish()
 
 def main():
-    cov_regs = [0]
-    hidden_layer_sizes = [3]
-    random_seeds = [1]
-    envs = ['G1CartPole']
-
-    for random_seed, env, hidden_layer_size, cov_reg in itertools.product(random_seeds, envs, hidden_layer_sizes, cov_regs):
-        train(project_name=f'G1CartPole',
-              env_name=env,
-              train_samples=60000,
-              val_samples=20000,
-              test_samples=20000,
-              Ksteps=50,
-              train_steps=50000,
-              hidden_layers=hidden_layer_size,
-              cov_reg=cov_reg,
-              gamma=0.8,
-              seed=random_seed,
-              batch_size=64,
-              val_step=1000,
-              initial_lr=1e-3,
-              lr_step=1000,
-              lr_gamma=0.9,
-              max_norm=0.1,
-              cov_reg_weight=1,
-              control_loss_weight=0,
-              normalize=False,
-              )
+    train(project_name=f'G1',
+            env_name='G1CartPole',
+            train_samples=60000,
+            val_samples=20000,
+            test_samples=20000,
+            steps=50,
+            train_steps=50000,
+            hidden_layers=4,
+            cov_reg=1,
+            gamma=0.8,
+            seed=1,
+            batch_size=64,
+            val_step=1000,
+            initial_lr=1e-3,
+            lr_step=1000,
+            lr_gamma=0.9,
+            max_norm=0.01,
+            cov_reg_weight=1,
+            control_loss_weight=1,
+            normalize=True,
+            )
 
 if __name__ == "__main__":
     main()

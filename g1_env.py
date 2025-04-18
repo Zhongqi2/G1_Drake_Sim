@@ -113,7 +113,7 @@ class G1Env():
         tauG = self.controller_plant.CalcGravityGeneralizedForces(plant_context)
         q_ddot = np.linalg.inv(M) @ (u_input - tauG - Cv)  # Compute acceleration q̈
         x_dot = np.concatenate((x[7:],q_ddot))
-        print(np.linalg.det(M))
+        # print(np.linalg.det(M))
         # print("tauG:",tauG)
         # print("x_dot:",x_dot)
         # ipdb.set_trace()

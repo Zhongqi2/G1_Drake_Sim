@@ -53,9 +53,13 @@ class data_collecter():
         ipdb.set_trace()
     
 if __name__ == "__main__":
-    Ktrain_samples = 1000
-    Ksteps = 10
-    G1_data_collecter = data_collecter('g1')  
+    num_samples = 100000
+    steps = 50
+    collector = data_collecter('g1')  
     # train_data = G1_data_collecter.collect_koopman_data(Ktrain_samples,Ksteps)
-    G1_data_collecter.gravity_compensation_test()
-    ipdb.set_trace()
+    # G1_data_collecter.gravity_compensation_test()
+    
+    data = collector.collect_koopman_data(num_samples, steps)
+    np.save("G1_data.npy", data)
+    print("Saved data shape:", data.shape)
+    #ipdb.set_trace()
