@@ -72,7 +72,6 @@ class G1CartPoleDataCollecter():
     
     def get_data(self, data_path):
         data = np.load(f"../data/datasets/g1_cartpole_data/{data_path}")
-        #data = np.load(f"koopman/data/datasets/g1_cartpole_data/{data_path}")
         return data
     
     def collect_koopman_data(self, traj_num, steps):
@@ -87,8 +86,7 @@ class G1DataCollecter():
         self.data_path = 'G1_data.npy'
     
     def get_data(self, data_path):
-        #data = np.load(f"../data/datasets/g1_data/{data_path}")
-        data = np.load(f"koopman/data/datasets/g1_data/{data_path}")
+        data = np.load(f"../data/datasets/g1_data/{data_path}")
         return data
     
     def collect_koopman_data(self, traj_num, steps):
@@ -102,7 +100,6 @@ class KoopmanDatasetCollector():
 
         norm_str = "norm" if self.normalize else "unnorm"
         data_path = f"../data/datasets/dataset_{env_name}_{norm_str}_train_{train_samples}_val_{val_samples}_test_{test_samples}_steps_{steps}.pt"
-        #data_path = f"koopman/data/datasets/dataset_{env_name}_{norm_str}_train_{train_samples}_val_{val_samples}_test_{test_samples}_steps_{steps}.pt"
         self.u_dim = None
         self.state_dim = None
 
