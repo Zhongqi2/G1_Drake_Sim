@@ -44,6 +44,7 @@ class DataCollector:
             
             # 2) Initialize random state
             q_init = self._random_initial_position()
+
             self.plant.SetPositions(plant_context, q_init)
             self.plant.SetVelocities(plant_context, np.zeros(self.nq))
             
@@ -56,28 +57,40 @@ class DataCollector:
             data[traj_idx, 0, :] = np.hstack([np.zeros(self.udim), x])
             
             current_time = 0.0  # Track simulation time
-            
+            # self.env.meshcat.StartRecording(set_visualizations_while_recording=True)
             # Step through trajectory
             for step in range(1, steps_per_trajectory+1):
                 # Random torque
                 u = np.random.uniform(*self.effort_limits)
-                
-                # Apply torque to the SAME context
+                self.plant.SetPositions(plant_context, x[:8])
+                self.plant.SetVelocities(plant_context, x[8:])
+                M = self.plant.CalcMassMatrix(plant_context)
+                Cv = self.plant.CalcBiasTerm(plant_context)
+                tauG = self.plant.CalcGravityGeneralizedForces(plant_context)
+                B = self.plant.MakeActuationMatrix()
+                q_ddot = np.linalg.inv(M) @ (B @ u + tauG - Cv)  # Compute acceleration q̈
+                x_dot = np.concatenate((x[8:],q_ddot))
+                x = x + x_dot * self.dt
+                data[traj_idx, step, :] = np.hstack([u, x])
+
+                # # Apply torque to the SAME context
                 torque_context = self.env.diagram.GetMutableSubsystemContext(
                     self.env.torque_input, root_context)
-                self.env.torque_port.FixValue(torque_context, u)
+                # self.env.torque_port.FixValue(torque_context, u)
                 
-                # Advance simulation by ONE STEP
-                self.sim.AdvanceTo(current_time + self.dt)
-                current_time += self.dt
+                # # Advance simulation by ONE STEP
+                # self.sim.AdvanceTo(current_time + self.dt)
+                # current_time += self.dt
                 
-                # Get updated state
-                x = np.concatenate([
-                    self.plant.GetPositions(plant_context),
-                    self.plant.GetVelocities(plant_context)
-                ])
-                data[traj_idx, step, :] = np.hstack([u, x])
-            
+                # # Get updated state
+                # x = np.concatenate([
+                #     self.plant.GetPositions(plant_context),
+                #     self.plant.GetVelocities(plant_context)
+                # ])
+                # data[traj_idx, step, :] = np.hstack([u, x])
+                
+            # self.env.meshcat.PublishRecording()
+            # ipdb.set_trace()
             # 5) Force cleanup of trajectory-specific resources
             del root_context, plant_context, torque_context
             gc.collect()
@@ -96,7 +109,6 @@ class DataCollector:
         # q[7] = 0.0  # Cart position
         q[7] = np.pi + np.random.normal(0, 0.05)  # Pole angle
         return q
-
 
     def gravity_compensation_test(self, model_path="model.pth"):
         """Updated gravity compensation test (if needed)"""

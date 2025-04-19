@@ -26,7 +26,7 @@ meshcat = StartMeshcat()
 
 
 class G1Env:
-    def __init__(self, time_step: float = 0.0001):
+    def __init__(self, time_step: float = 0.001):
         self.builder = DiagramBuilder()
         self.time_step = time_step
 
@@ -69,6 +69,7 @@ class G1Env:
             self.builder, self.scene_graph, meshcat,
             MeshcatVisualizerParams())
 
+        self.meshcat = meshcat
         self.diagram = self.builder.Build()
 
     def _store_joint_limits(self, joint_names):
