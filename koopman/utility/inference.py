@@ -15,7 +15,7 @@ def load_koopman_model(pth_path, device="cpu"):
     env_name = pth_path.split("_")[4]
     print("env_name:", env_name)
     # Calculate dimension of the Koopman space: 
-    data_collector = KoopmanDatasetCollector(env_name)
+    data_collector = KoopmanDatasetCollector(env_name, steps=100)
     NKoopman = layers[-1] + data_collector.state_dim
 
     u_dim = data_collector.u_dim
