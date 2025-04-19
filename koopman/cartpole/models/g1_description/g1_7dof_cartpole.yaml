@@ -5,7 +5,7 @@ directives:
 # Add iiwa_1
 - add_model:
     name: G1
-    file: package://drake_project/models/g1_description/g1_14dof_with_hand.urdf
+    file: package://drake_project/models/g1_description/g1_7dof_cartpole.urdf
 
 - add_weld:
     parent: world

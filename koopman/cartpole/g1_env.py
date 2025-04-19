@@ -7,24 +7,25 @@ from support_functions import AddMultibodyTriad
 meshcat = StartMeshcat()
 
 class G1Env():
-    def __init__(self, time_step=0.001):
+    def __init__(self, env_name="g1", time_step=0.001):
         self.builder = DiagramBuilder()
         self.time_step = time_step
-        self.num_positions = 8
+        self.num_positions = 7 if env_name == "g1" else 8
+        file_path = "models/g1_description/g1_7dof.yaml" if env_name == "g1" else "models/g1_description/g1_7dof_cartpole.yaml"
         
         # Create plant and scene graph
         self.plant, self.scene_graph = AddMultibodyPlantSceneGraph(self.builder, time_step)
         parser = Parser(self.plant)
         parser.package_map().Add("drake_project", "./")
-        directives = LoadModelDirectives("models/g1_description/g1_7dof_rubber_hand.yaml")
-        #directives = LoadModelDirectives("models/g1_description/g1_7dof.yaml")
+        directives = LoadModelDirectives(file_path)
         ProcessModelDirectives(directives, self.plant, parser)
         
         # Add visualization frames
         G1 = self.plant.GetModelInstanceByName("G1")
         base_frame = self.plant.GetFrameByName("pelvis", G1)
-        #hand_frame = self.plant.GetFrameByName("cart", G1)
         AddMultibodyTriad(base_frame, self.scene_graph)
+
+        #hand_frame = self.plant.GetFrameByName("cart", G1)
         #AddMultibodyTriad(hand_frame, self.scene_graph)
         
         self.plant.Finalize()
@@ -49,17 +50,6 @@ class G1Env():
         self.diagram = self.builder.Build()
         
     def step(self, x, u):
-        # plant_context = self.controller_plant.CreateDefaultContext()
-        # self.controller_plant.SetPositions(plant_context, x[:self.num_positions])
-        # self.controller_plant.SetVelocities(plant_context, x[self.num_positions:])
-        # M = self.controller_plant.CalcMassMatrix(plant_context)
-        # Cv = self.controller_plant.CalcBiasTerm(plant_context)
-        # tauG = self.controller_plant.CalcGravityGeneralizedForces(plant_context)
-        # q_ddot = np.linalg.inv(M) @ (u - tauG - Cv)  # Compute acceleration q̈
-        # x_dot = np.concatenate((x[self.num_positions:],q_ddot))
-        # x_next = x + x_dot * self.time_step
-        
-        # return x_next
         context = self.controller_plant.CreateDefaultContext()
         
         # Set state (positions and velocities)
