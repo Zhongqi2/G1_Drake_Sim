@@ -5,7 +5,7 @@ from datetime import datetime
 from pydrake.all import Simulator
 import gc
 import argparse
-
+import ipdb
 class DataCollector:
     def __init__(self):
         # 1) Build environment and create ONE simulator instance

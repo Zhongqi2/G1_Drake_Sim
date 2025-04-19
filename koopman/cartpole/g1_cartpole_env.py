@@ -26,7 +26,7 @@ meshcat = StartMeshcat()
 
 
 class G1Env:
-    def __init__(self, time_step: float = 0.001):
+    def __init__(self, time_step: float = 0.0001):
         self.builder = DiagramBuilder()
         self.time_step = time_step
 
