@@ -1,5 +1,6 @@
 import numpy as np
 from g1_env import G1Env
+from tqdm import tqdm
 
 class DataCollector:
     def __init__(self, env_name="g1", dt=0.001):
@@ -16,10 +17,7 @@ class DataCollector:
     
     def collect_koopman_data(self,traj_num,steps):
         train_data = np.empty((steps+1,traj_num,self.state_dim+self.control_dim))
-        for traj_i in range(traj_num):
-            if traj_i % 1000 == 0:
-                print(f"Trajectory {traj_i}/{traj_num}")
-
+        for traj_i in tqdm(range(traj_num)):
             x = self.reset_joint_state
             u = np.random.uniform(self.effort_lower_limits, self.effort_upper_limits)
             train_data[0,traj_i,:]=np.concatenate([u.reshape(-1),x.reshape(-1)],axis=0).reshape(-1)
@@ -33,7 +31,7 @@ if __name__ == "__main__":
     env_name = "g1_cartpole"
     traj_num = 100000
     steps = 50
-    dt = 0.001
+    dt = 0.01
 
     collector = DataCollector(env_name=env_name, dt=dt)
     dataset = collector.collect_koopman_data(traj_num=traj_num, steps=steps)

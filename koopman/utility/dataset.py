@@ -68,7 +68,7 @@ class G1CartPoleDataCollecter():
     def __init__(self):
         self.state_dim = 16
         self.u_dim = 7
-        self.data_path = 'g1_cartpole_50_step_100000_traj_0.001_dtctrl.npy'
+        self.data_path = 'g1_cartpole_50_step_100000_traj_0.01_dtctrl.npy'
     
     def get_data(self, data_path):
         data = np.load(f"../data/datasets/g1_cartpole_data/{data_path}")
@@ -95,7 +95,7 @@ class G1DataCollecter():
         return data[:steps+1, :traj_num, :]
 
 class KoopmanDatasetCollector():
-    def __init__(self, env_name, train_samples=60000, val_samples=20000, test_samples=20000, steps=50, normalize=False, shuffle=False):
+    def __init__(self, env_name, train_samples=80000, val_samples=10000, test_samples=10000, steps=50, normalize=True, shuffle=False):
         self.normalize = normalize
 
         norm_str = "norm" if self.normalize else "unnorm"
@@ -159,6 +159,7 @@ class KoopmanDatasetCollector():
                         'train_control_mean': action_train_mean, 'train_state_std': state_train_std, 'train_control_std': action_train_std}, 
                         data_path, pickle_protocol=pickle.HIGHEST_PROTOCOL)
 
+        print("Loading dataset from: ", data_path)
         dataset = torch.load(data_path, weights_only=False)
         self.train_data = dataset["train_data"]
         self.val_data = dataset["val_data"]

@@ -219,15 +219,15 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
 
 def main():
     train(project_name=f'G1',
-            env_name='G1',
+            env_name='G1CartPole',
             train_samples=80000,
             val_samples=10000,
             test_samples=10000,
             steps=50,
-            train_steps=50000,
+            train_steps=100000,
             hidden_layers=4,
             cov_reg=1,
-            gamma=0.8,
+            gamma=0.99,
             seed=1,
             batch_size=64,
             val_step=1000,
@@ -237,7 +237,7 @@ def main():
             max_norm=0.01,
             cov_reg_weight=1,
             control_loss_weight=1,
-            normalize=True,
+            normalize=False,
             )
 
 if __name__ == "__main__":
