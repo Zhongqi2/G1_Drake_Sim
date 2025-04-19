@@ -68,31 +68,52 @@ class G1CartPoleDataCollecter():
     def __init__(self):
         self.state_dim = 16
         self.u_dim = 7
-        self.data_path = 'G1CartPole_data_20250418_112749.npy'
+        self.data_path = 'g1_cartpole_50_step_100000_traj_0.0001_dtctrl.npy'
     
     def get_data(self, data_path):
         data = np.load(f"../data/datasets/g1_cartpole_data/{data_path}")
+        print(f"Raw data shape: {data.shape}")
         return data
     
     def collect_koopman_data(self, traj_num, steps):
         data = self.get_data(self.data_path)
-        print(f"Data shape: {data.shape}")
+        #data = data.transpose(1, 0, 2).reshape(-1, 23).reshape(traj_num, steps, 23).transpose(1, 0, 2)
+        #data = data.transpose(1,0,2)
+        print(f"Processed data shape: {data.shape}")
         return data[:steps+1, :traj_num, :]
     
 class G1DataCollecter():
     def __init__(self):
         self.state_dim = 14
         self.u_dim = 7
-        self.data_path = 'G1_data.npy'
+        self.data_path = 'g1_50_step_100000_traj_0.0001_dtctrl.npy'
     
     def get_data(self, data_path):
         data = np.load(f"../data/datasets/g1_data/{data_path}")
+        print(f"Raw data shape: {data.shape}")
         return data
     
     def collect_koopman_data(self, traj_num, steps):
         data = self.get_data(self.data_path)
-        print(f"Data shape: {data.shape}")
+        #data = data.transpose(1, 0, 2).reshape(-1, 21).reshape(traj_num, steps, 21).transpose(1, 0, 2)
+        print(f"Processed data shape: {data.shape}")
         return data[:steps+1, :traj_num, :]
+    
+# class G1DataCollecter():
+#     def __init__(self):
+#         self.state_dim = 14
+#         self.u_dim = 7
+#         self.data_path = 'G1_data.npy'
+    
+#     def get_data(self, data_path):
+#         data = np.load(f"../data/datasets/g1_data/{data_path}")
+#         print(f"Raw data shape: {data.shape}")
+#         return data
+    
+#     def collect_koopman_data(self, traj_num, steps):
+#         data = self.get_data(self.data_path)
+#         print(f"Processed data shape: {data.shape}")
+#         return data[:steps+1, :traj_num, :]
 
 class KoopmanDatasetCollector():
     def __init__(self, env_name, train_samples=60000, val_samples=20000, test_samples=20000, steps=50, normalize=False, shuffle=False):

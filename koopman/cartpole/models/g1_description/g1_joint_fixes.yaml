@@ -1,0 +1,3 @@
+directives:
+  - reverse_revolute_joint:
+      joint: right_wrist_yaw_joint

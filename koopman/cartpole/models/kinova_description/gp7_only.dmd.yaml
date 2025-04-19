@@ -1,8 +1,0 @@
-directives:
-  # Load Kinova URDF as a welded, fixed‑base arm
-  - add_model:
-      name: gp7
-      file: package://drake_project/models/kinova_description/GEN3_URDF_V12.urdf
-  - add_weld:
-      parent: world
-      child: gp7::base_link
