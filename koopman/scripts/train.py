@@ -225,7 +225,7 @@ def main():
             test_samples=10000,
             steps=50,
             train_steps=100000,
-            hidden_layers=4,
+            hidden_layers=2,
             cov_reg=1,
             gamma=0.99,
             seed=1,
