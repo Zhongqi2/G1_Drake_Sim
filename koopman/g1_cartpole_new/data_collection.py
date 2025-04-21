@@ -25,13 +25,6 @@ class DataCollector:
         print("Velocity Upper Limits:", self.vel_upper)
         print("Effort Lower Limits:", self.effort_lower)
         print("Effort Upper Limits:", self.effort_upper)
-
-        self.pos_mean = (self.pos_lower + self.pos_upper) / 2
-        self.pos_std = (self.pos_upper - self.pos_lower) / 2
-        self.vel_mean = (self.vel_lower + self.vel_upper) / 2
-        self.vel_std = (self.vel_upper - self.vel_lower) / 2
-        self.effort_mean = (self.effort_lower + self.effort_upper) / 2
-        self.effort_std = (self.effort_upper - self.effort_lower) / 2
     
     def collect_data(self, traj_num, steps):
         data = np.empty((steps, traj_num, self.state_dim + self.control_dim))
@@ -72,7 +65,7 @@ class DataCollector:
 if __name__ == "__main__":
     env_name = "g1_cartpole"
     train_rollout_steps = 20
-    train_traj_num = 100
+    train_traj_num = 1000
     dt = 0.001
 
     collector = DataCollector(env_name=env_name, dt=dt, collision_free=True)
