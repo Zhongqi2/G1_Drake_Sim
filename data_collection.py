@@ -53,7 +53,7 @@ class data_collecter():
         ipdb.set_trace()
     
 if __name__ == "__main__":
-    num_samples = 100000
+    num_samples = 100
     steps = 50
     collector = data_collecter('g1')  
     # train_data = G1_data_collecter.collect_koopman_data(Ktrain_samples,Ksteps)

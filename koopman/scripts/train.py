@@ -194,7 +194,7 @@ def train(project_name, env_name, train_samples=60000, val_samples=20000, test_s
                         best_state_loss = copy.copy(state_loss_val)
                         best_state_dict = copy.copy(net.state_dict())
                         saved_dict = {'model': best_state_dict, 'layer': layers}
-                        torch.save(saved_dict, f"../log/best_models/{project_name}/best_model_{norm_str}_{env_name}_{layers[-1]}_{cov_reg}_{control_loss_weight}_{seed}.pth")
+                        torch.save(saved_dict, f"../log/best_models/{project_name}/best_model_{env_name}.pth")
 
                     wandb.log({
                         "Val/StateLoss": state_loss_val.item(),
@@ -223,18 +223,18 @@ def main():
             train_samples=80000,
             val_samples=10000,
             test_samples=10000,
-            steps=50,
+            steps=20,
             train_steps=100000,
             hidden_layers=2,
             cov_reg=1,
-            gamma=0.99,
+            gamma=1,
             seed=1,
             batch_size=64,
             val_step=1000,
             initial_lr=1e-3,
             lr_step=1000,
             lr_gamma=0.9,
-            max_norm=0.01,
+            max_norm=0.1,
             cov_reg_weight=1,
             control_loss_weight=1,
             normalize=False,

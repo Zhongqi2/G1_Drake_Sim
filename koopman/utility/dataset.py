@@ -68,9 +68,10 @@ class G1CartPoleDataCollecter():
     def __init__(self):
         self.state_dim = 16
         self.u_dim = 7
-        self.data_path = 'g1_cartpole_50_step_100000_traj_0.001_dtctrl.npy'
+        self.data_path = 'g1_cartpole_20_step_100000_traj_0.001_dtctrl.npy'
     
     def get_data(self, data_path):
+        print(f"Loading data from: {data_path}")
         data = np.load(f"../data/datasets/g1_cartpole_data/{data_path}")
         return data
     
@@ -83,7 +84,7 @@ class G1DataCollecter():
     def __init__(self):
         self.state_dim = 14
         self.u_dim = 7
-        self.data_path = 'g1_50_step_100000_traj_0.001_dtctrl.npy'
+        self.data_path = 'g1_20_step_100000_traj_0.001_dtctrl.npy'
     
     def get_data(self, data_path):
         data = np.load(f"../data/datasets/g1_data/{data_path}")
